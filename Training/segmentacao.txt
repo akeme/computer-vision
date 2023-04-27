@@ -1,0 +1,96 @@
+9
+
+
+1
+Hey everyone. I'm really struggling to figure out the logic with this one and was hoping you could help me out. Before I continue I just want to let you know that I am amateur programmer and a beginner at that, with no formal Computer Science training of any sort, so please bear with me. :D Also, I'm using Python, but I could use Java or something similar.
+
+Anywho, I am looking to implement a Region Growing for use in a rudimentary Drawbot. Here is an article on region growing: http://en.wikipedia.org/wiki/Region_growing
+
+The way I envision it, the image the draw is based upon will meet the following criteria:
+
+The image will be at most 3x3 inches in size at an arbitrary Color Depth
+
+The image will be a black continuous shape on a white background
+
+The shape can be located anywhere on the background.
+
+I've considered the following solutions to this problem. While some work to an extent, each has some considerable flaws in either their performance or feasibility (at least they don't seem feasible to me). Furthermore, because this is a Drawbot, this needs to be done with a single continuous line. This doesn't mean however that I can't backtrack, it only eliminates the possibility of multiple starting points (seeds).
+
+Considered Approaches:
+Random Walk:
+Solving this problem with a random walk was my first instinct. A random walk program accomplishing this would, I imagine, look something like this:
+
+pseudo python...
+
+Cells To Visit = Number of Black Cells
+Cells Visited = 0
+MarkColor = red
+While Cells Visited < Cells To Visit:
+    if currentcell is black:
+        Mark Current Cell As Visited #change pixel to red
+        Cells Visited +=1
+    neighbors = Get_Adjacent_Cells() #returns cells either black or red
+    next cell = random.choose(neighbors)
+    currentCell = next cell
+While I suppose this is feasible, it seems to me to be highly ineffective and doesn't guarantee good results, but in the interest of actually getting something done I may end up trying this... Is my logic in the pseudocode even vaguely correct?
+
+Sweeping Pattern:
+This method to me seemed to be the most trivial to implement. My idea here is that I could choose a starting point at one extreme of the shape (e.g. the lowest most left point). From there it would draw to the right, moving only on the x axis until it hit a white pixel. From here it would move up one pixel on the y axis, and then move left on the x axis until it reached a white pixel. If the pixel directly above it happend to be white, backtrack on the x axis until it finds a black pixel above it.
+
+This method upon further inspection has some major short comings. When faced with a shape such as this:
+
+diagram1
+
+The result will look like this:
+
+diagram2
+
+And even if I were to tell it to start sweeping down after awhile, the middle leg would still be overlooked.
+
+4/8 Connected Neighborhood:
+http://en.wikipedia.org/wiki/8-connected_neighborhood
+
+This method appears to me to be the most powerful and effective, but at this point I can't figure it out fully, nor can I think of how I would implement it without potentially leaving some overlooked areas
+
+At every cell I would look at the neighboring black cells, devise some method for ranking which one I should visit first, visit all of them, and repeat the process until all cells are covered.
+
+The problems I could see here is first of all dealing with the data structure necessary to accomplish this, and also merely figuring out the logic behind it.
+
+Those are the best solutions I've been able to think of. Thank you for taking the time to read this, I realize it is long, but I thought that I should make it as explicit as possible. Any and all suggestions will be greatly appreciated... Thanks!
+
+Edit:
+I also looked into maze generating and solving algorithms, but wasn't sure how to implement that here. My understanding of the maze solving algorithms is that they rely on the passages of the maze to be of equal width. I could of course be wrong about that.
+
+python algorithm image image-processing flood-fill
+shareimprove this question
+edited May 2 '11 at 22:50
+
+Acorn
+33.8k1919 gold badges118118 silver badges155155 bronze badges
+asked May 1 '11 at 20:43
+
+danem
+84544 gold badges1313 silver badges3333 bronze badges
+Thanks for sharing. I'm in the midst of studying it now. Ill let you know/ ask you more questions depending on where I'm at. :P – danem May 1 '11 at 21:33
+How would you fill a 1 pixel wide T shape? – Stephen Denne May 2 '11 at 23:12
+add a comment
+4 Answers
+activeoldestvotes
+Não encontrou uma resposta? Pergunte em Stack Overflow em Português.
+
+✕
+
+1
+
+Here's a really nice little screencast on writing a recursive maze solver: http://thinkcode.tv/catalog/amazing-python/
+
+I think it might give you some ideas for the problem you are trying to solve.
+
+Also, here's a little recursive maze solving script that I wrote after watching the screencast http://pastie.org/1854582. Equal width passages are not necessary, the only things that are necessary are open space, walls, and some kind of an ending condition, in this case, finding the end of the maze.
+
+If you don't want to go recursive, the other thing you can do is use a "backtracking" method. You can see a little example of it being used in the random generation of mazes on this page: http://weblog.jamisbuck.org/2011/2/7/maze-generation-algorithm-recap (First example on the page).
+
+Is this sounding relevant? If it is, let me know if you want me to explain anything in more detail.
+
+Edit:
+This seems like a really good discussion on doing flood fills in python http://www.daniweb.com/software-development/python/threads/148874
