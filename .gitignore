@@ -1,0 +1,10 @@
+*.tmp
+__myvenv__
+cache
+.db
+.ipynb_checkpoints
+__pycache__
+/.ipynb_checkpoints
+Pipfile
+Pipfile.lock
+/adaboost-checkpoint.ipynb
