@@ -6,7 +6,9 @@ Trying to organize the files
 
 ***Work in progress***
 
-##Visão computacional
+___
+
+## Visão computacional
 ### OpenCV e Python 
 
 
