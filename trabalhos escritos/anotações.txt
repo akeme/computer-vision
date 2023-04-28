@@ -1,0 +1,183 @@
+to do list: procurar anotações de visão computacional
+reler a parte de limiarização
+procurar material para entender a diferença entre correlação e convolução
+material 
+https://web.stanford.edu/class/ee367/slides/
+https://www.cs.toronto.edu/~urtasun/courses/CV/lecture07.pdf
+
+
+visão computacional
+
+
+amostragem e quantizações de imagens
+
+imagem fênomeno físico (comprimento de ondas - dados continuos )
+a imagem pode ser contínua em relação às coordenadas x e y; amplitude
+
+converter para meio digital: amostragem e quantização
+
+digitalização dos valores de coordenadas: amostragem - localização discreta (x,y) 
+
+digitalização de valores de aplitudes: quantização - a variação da cor (qts cores teriam no intervalo por exemplo entre o branco e o preto)
+
+
+medidas de distância
+para os pixels p(x,y), q(s,t) e z (v,w)
+1 - distância euclidiana D_e
+
+
+raiz quadrada dos (x-s)² + (y-t)²
+os pixel que possuem distância de (x,y) menor ou igual a um valor r são os pontos contidos em um disco de raio r com centro em (x,y)
+
+2 distância city block ou manhattan D_4
+formam um losango centrado em (x,y)
+i.e 
+
+		2		
+	2	1	2
+2	1	0	1	2
+	2	1	2
+		2
+
+3 - distância chessboard(tabuleiro de xadrez?) D_8 
+ 
+ D_8(p,q)= máx(|x-s|,|y-t|)
+ formam um quadrado centrado em (x,y)
+ exemplo:
+
+ 2	2	2	2	2	
+ 2	1	1	1	2
+ 2	1	0	1	2
+ 2	1	1	1	2
+ 2	2	2	2	2
+
+ observação: as D_4 e D_8 entre p e q são independentes de quaisquer caminhos que possam existir entre os pontos -> considera apenas as coordenadas dos pontos.
+
+ ARRANJO MATRICIAL -> operações pixel a pixel (ponto a ponto)
+
+
+ cap 3 
+
+ filtragem espacial 
+ uma janela que percorre toda a imagem (a posição base é ao centro e o centro se desloca na imagem)
+ quando a vizinhança(janela) está na borda da imagem:
+ * ignorar os vizinhos externos
+ * preencher com zeros (ou outros valores predeterminados)
+
+ vizinhança acompanhada com operação predefinida: filtro espacial, ou máscara espacial, ou kernel, ou template ou janela.
+
+observação apesar do livro utilizar a palavra máscara, segundo o professor pedrosa é errado. pois o conceito de máscara é diferente. melhor utilizar janela ou kernel - procurar anotações da disciplina de visão computacional para conferir a explicação
+
+ operação deifine a natureza do processo de filtragem
+
+ menor valor possível 1x1 -> utilizada em processos de limiarização (thresholding)
+
+ transformação logaritmica, espectro de fourier (pesquisar em outro livro) - reler o 3.2
+
+ histogramas 
+ níveis de intensidade no intervalo [0, L-1] uma função discreta h(rk) = nk 
+ rk = k-ésimo valor de intensidade 
+ nk é o numero de pixels da imagem com intensidade rk 
+
+ (histogramas: contar qts pixels tem cor "tal")
+
+ são utilizados para várias tecnicas de processamento do domínio espacial:
+ realce de imagens; estatístias úteis da imagem
+
+ equalização de histogramas: limiarização? 
+tecnicas globais
+
+existem as técnicas locais na qual ao invés de levar em consideração o histograma de toda a imagem será levado apenas do kernel a ser estudado
+
+
+-----
+
+3.4.1 funcionamento da filtragem espacial
+1 - uma vizinhança
+2 - operação predefinida realizada sobre os pixels da imagem incluidos na vizinhança
+
+filtragem: cria um novopixel com coordenadas iguais as coordenadas no centro da vizinhança, valor = resutado da operação de filtragem
+
+> se a operação realizada for linear: filtro é chamado de filtro especial linear 
+se não - filtro não linear
+
+correlação espacial - processo de mover a máscara pela imagem e calcular a soma dos produtos em cada posição
+
+convolução - igual, porém o filtro é rotacionado a 180º(???)
+
+
+filtro de média:
+soma todos os nove pixels e divide por 9 (média simples)
+suaviza a imagem; filtro passa baixa
+pode ser usado uma média ponderada (filtro de média ponderada)
+
+filtros espaciais de suavização
+utilizados para: borramento e redução de ruidos
+borramento - pré processamento, exemplo remoção de pequenos detalhes da imagem, conexão de pequenas descontinuidades em linhas ou curvas.
+
+filtro de mediana 
+-> filtro estatísitico não linear 
+substitui o valor do pixel do centro pela mediana dos valores da vizinhança
+utilizados para reduzir ruídos aleatorios, e impulsivo (sal e pimenta)
+
+
+
+
+Types of image features
+Edges
+Edges are points where there is a boundary (or an edge) between two image regions. In general, an edge can be of almost arbitrary shape, and may include junctions. In practice, edges are usually defined as sets of points in the image which have a strong gradient magnitude. Furthermore, some common algorithms will then chain high gradient points together to form a more complete description of an edge. These algorithms usually place some constraints on the properties of an edge, such as shape, smoothness, and gradient value.
+
+Locally, edges have a one-dimensional structure.
+
+Corners / interest points
+The terms corners and interest points are used somewhat interchangeably and refer to point-like features in an image, which have a local two dimensional structure. The name "Corner" arose since early algorithms first performed edge detection, and then analysed the edges to find rapid changes in direction (corners). These algorithms were then developed so that explicit edge detection was no longer required, for instance by looking for high levels of curvature in the image gradient. It was then noticed that the so-called corners were also being detected on parts of the image which were not corners in the traditional sense (for instance a small bright spot on a dark background may be detected). These points are frequently known as interest points, but the term "corner" is used by tradition.
+
+Blobs / regions of interest points
+Blobs provide a complementary description of image structures in terms of regions, as opposed to corners that are more point-like. Nevertheless, blob descriptors may often contain a preferred point (a local maximum of an operator response or a center of gravity) which means that many blob detectors may also be regarded as interest point operators. Blob detectors can detect areas in an image which are too smooth to be detected by a corner detector.
+
+Consider shrinking an image and then performing corner detection. The detector will respond to points which are sharp in the shrunk image, but may be smooth in the original image. It is at this point that the difference between a corner detector and a blob detector becomes somewhat vague. To a large extent, this distinction can be remedied by including an appropriate notion of scale. Nevertheless, due to their response properties to different types of image structures at different scales, the LoG and DoH blob detectors are also mentioned in the article on corner detection.
+
+Ridges
+For elongated objects, the notion of ridges is a natural tool. A ridge descriptor computed from a grey-level image can be seen as a generalization of a medial axis. From a practical viewpoint, a ridge can be thought of as a one-dimensional curve that represents an axis of symmetry, and in addition has an attribute of local ridge width associated with each ridge point. Unfortunately, however, it is algorithmically harder to extract ridge features from general classes of grey-level images than edge-, corner- or blob features. Nevertheless, ridge descriptors are frequently used for road extraction in aerial images and for extracting blood vessels in medical images—see ridge detection.
+
+Feature detectors
+Common feature detectors and their classification:
+Feature detector	Edge	Corner	Blob
+Canny	X		
+Sobel	X		
+Kayyali	X		
+Harris & Stephens / Plessey / Shi–Tomasi	X	X	
+SUSAN	X	X	
+Shi & Tomasi		X	
+Level curve curvature		X	
+FAST		X	X
+Laplacian of Gaussian		X	X
+Difference of Gaussians		X	X
+Determinant of Hessian		X	X
+MSER			X
+PCBR			X
+Grey-level blobs			X
+
+
+facial landmarkes
+
+pontos padrões sobre o rosto que ajuda a identificar onde estão os olhos, a boca, o nariz
+dessa forma é utilizado para tarefas como: rotação do rosto (lembrando que quase nunca as fotos ou imagens estão totalmente de frente)
+e também para a questão da detecção de piscadas.
+OBSERVAÇÃO: vale a pena ler pois muito provavelmente será utilizada para detecção de atenção
+
+
+----------------------
+descritores
+1 - What image descriptor am I using?
+2 - What is the expected output of my image descriptor?
+
+https://www.pyimagesearch.com/2014/03/03/charizard-explains-describe-quantify-image-using-feature-vectors/
+
+
+
+
+
+
+
+
