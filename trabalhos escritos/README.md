@@ -1,3 +1,4 @@
+=======
 # Trabalhos Escritos
 
 Trabalhos escritos entregue como forma de avaliação para disciplina de visão computacional.
